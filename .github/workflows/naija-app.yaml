@@ -44,7 +44,9 @@ jobs:
             --registry-password ${{ secrets.ACR_PASSWORD}} \
             --dns-name-label aci-frontend-alams404 \
             --ports 80 \
-            --os-type linux
+            --os-type linux \
+            --cpu 1 \
+            --memory 1.5
 
       - name: Update ACI backend to new image
         run: |
