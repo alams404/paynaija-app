@@ -50,8 +50,16 @@ jobs:
 
       - name: Update ACI backend to new image
         run: |
-          az container update \
-            --name aci-backend \
-            --resource-group alams404  \
-            --image acr3tieraciproject.azurecr.io/backend:${{ github.sha }}
+          az container create \
+           --name aci-backend \
+           --resource-group alams404 \
+           --image acr3tieraciproject.azurecr.io/backend:${{ github.sha }} \
+           --registry-login-server acr3tieraciproject.azurecr.io \
+           --registry-username ${{ secrets.ACR_USERNAME }} \
+           --registry-password ${{ secrets.ACR_PASSWORD }} \
+           --dns-name-label aci-backend-alams404 \
+           --ports 5000 \
+           --os-type linux \
+           --cpu 1 \
+           --memory 1.5
 
