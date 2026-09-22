@@ -1,1 +1,49 @@
 
+name: Build and Deploy
+
+on:
+  push:
+    branches: [main]
+
+env:
+  ACR_NAME: ${{ secrets.ACR_NAME }}
+  RESOURCE_GROUP: rg-3tier-aci-project
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.SUBSCRIPTION_CREDENTIALS }}
+
+      - name: ACR login
+        run: az acr login --name ${{ env.ACR_NAME }}
+
+      - name: Build and push frontend image
+        run: |
+          docker build -t ${{ env.ACR_NAME }}.azurecr.io/frontend:${{ github.sha }} ./frontend
+          docker push ${{ env.ACR_NAME }}.azurecr.io/frontend:${{ github.sha }}
+
+      - name: Build and push backend image
+        run: |
+          docker build -t ${{ env.ACR_NAME }}.azurecr.io/backend:${{ github.sha }} ./backend
+          docker push ${{ env.ACR_NAME }}.azurecr.io/backend:${{ github.sha }}
+
+      - name: Update ACI frontend to new image
+        run: |
+          az container update \
+            --name aci-frontend \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --image ${{ env.ACR_NAME }}.azurecr.io/frontend:${{ github.sha }}
+
+      - name: Update ACI backend to new image
+        run: |
+          az container update \
+            --name aci-backend \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --image ${{ env.ACR_NAME }}.azurecr.io/backend:${{ github.sha }}
+
