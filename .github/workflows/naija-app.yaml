@@ -37,7 +37,7 @@ jobs:
         run: |
           az container create \
             --name aci-frontend \
-            --resource-group rg-3tier-aci-project \
+            --resource-group alams404 \
             --image acr3tieraciproject.azurecr.io/frontend:${{ github.sha }} \
             --registry-login-server acr3tieraciproject.azurecr.io \
             --registry-username ${{ secrets.ACR_USERNAME}} \
@@ -49,6 +49,6 @@ jobs:
         run: |
           az container update \
             --name aci-backend \
-            --resource-group rg-3tier-aci-project   \
+            --resource-group alams404  \
             --image acr3tieraciproject.azurecr.io/backend:${{ github.sha }}
 
