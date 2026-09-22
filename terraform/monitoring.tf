@@ -15,7 +15,7 @@ resource "azurerm_monitor_diagnostic_setting" "backend_diag" {
     category = "ContainerInstanceLog"
   }
 
-  enabled_metric {
+  metric {
     category = "AllMetrics"
   }
 }

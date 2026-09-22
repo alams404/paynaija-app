@@ -21,29 +21,29 @@ jobs:
           creds: ${{ secrets.SUBSCRIPTION_CREDENTIALS }}
 
       - name: ACR login
-        run: az acr login --name ${{ env.ACR_NAME }}
+        run: az acr login --name acr3tieraciproject 
 
       - name: Build and push frontend image
         run: |
-          docker build -t ${{ env.ACR_NAME }}.azurecr.io/frontend:${{ github.sha }} ./frontend
-          docker push ${{ env.ACR_NAME }}.azurecr.io/frontend:${{ github.sha }}
+          docker build -t acr3tieraciproject.azurecr.io/frontend:${{ github.sha }} ./frontend
+          docker push acr3tieraciproject.azurecr.io/frontend:${{ github.sha }}
 
       - name: Build and push backend image
         run: |
-          docker build -t ${{ env.ACR_NAME }}.azurecr.io/backend:${{ github.sha }} ./backend
-          docker push ${{ env.ACR_NAME }}.azurecr.io/backend:${{ github.sha }}
+          docker build -t acr3tieraciproject.azurecr.io/backend:${{ github.sha }} ./backend
+          docker push acr3tieraciproject.azurecr.io/backend:${{ github.sha }}
 
       - name: Update ACI frontend to new image
         run: |
           az container update \
             --name aci-frontend \
-            --resource-group ${{ env.RESOURCE_GROUP }} \
-            --image ${{ env.ACR_NAME }}.azurecr.io/frontend:${{ github.sha }}
+            --resource-group rg-3tier-aci-project   \
+            --image acr3tieraciproject.azurecr.io/frontend:${{ github.sha }}
 
       - name: Update ACI backend to new image
         run: |
           az container update \
             --name aci-backend \
-            --resource-group ${{ env.RESOURCE_GROUP }} \
-            --image ${{ env.ACR_NAME }}.azurecr.io/backend:${{ github.sha }}
+            --resource-group rg-3tier-aci-project   \
+            --image acr3tieraciproject.azurecr.io/backend:${{ github.sha }}
 
