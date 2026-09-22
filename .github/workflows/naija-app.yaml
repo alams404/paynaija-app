@@ -35,10 +35,15 @@ jobs:
 
       - name: Update ACI frontend to new image
         run: |
-          az container update \
+          az container create \
             --name aci-frontend \
-            --resource-group rg-3tier-aci-project   \
-            --image acr3tieraciproject.azurecr.io/frontend:${{ github.sha }}
+            --resource-group rg-3tier-aci-project \
+            --image acr3tieraciproject.azurecr.io/frontend:${{ github.sha }} \
+            --registry-login-server acr3tieraciproject.azurecr.io \
+            --registry-username ${{ secrets.ACR_USERNAME}} \
+            --registry-password ${{ secrets.ACR_PASSWORD}} \
+            --dns-name-label aci-frontend-alams404.online \
+            --ports 80
 
       - name: Update ACI backend to new image
         run: |
