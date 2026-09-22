@@ -20,7 +20,7 @@ variable "acr_name" {
 }
 
 variable "custom_domain" {
-  description = "alams404.online"
+  description = "alams404"
   type        = string
 }
 

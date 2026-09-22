@@ -42,7 +42,7 @@ jobs:
             --registry-login-server acr3tieraciproject.azurecr.io \
             --registry-username ${{ secrets.ACR_USERNAME}} \
             --registry-password ${{ secrets.ACR_PASSWORD}} \
-            --dns-name-label aci-frontend-alams404.online \
+            --dns-name-label aci-frontend-alams404 \
             --ports 80 \
             --os-type linux
 
