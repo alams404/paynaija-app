@@ -8,7 +8,7 @@ export default function PayForm(){
   async function handlePay(e){
     e.preventDefault();
     try {
-      const resp = await axios.post('/api/payments/charge', { provider: 'paystack', amount, email });
+      const resp = await axios.post('http://aci-backend-alams404.eastus.azurecontainer.io:5000/api/payments/charge', { provider: 'paystack', amount, email });
       if (resp.data && resp.data.authorization_url) {
         window.location.href = resp.data.authorization_url;
       } else if (resp.data && resp.data.data && resp.data.data.authorization_url) {
