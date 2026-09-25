@@ -5,23 +5,35 @@ export default function PayForm(){
   const [email, setEmail] = useState('');
   const [amount, setAmount] = useState(1000);
 
-  async function handlePay(e){
-    e.preventDefault();
-    try {
-      const resp = await axios.post('http://aci-backend-alams404.eastus.azurecontainer.io:5000/api/payments/charge', { provider: 'paystack', amount, email });
-      if (resp.data && resp.data.authorization_url) {
-        window.location.href = resp.data.authorization_url;
-      } else if (resp.data && resp.data.data && resp.data.data.authorization_url) {
-        window.location.href = resp.data.data.authorization_url;
-      } else {
-        alert('Payment init failed. Inspect response in console.');
-        console.log(resp.data);
-      }
-    } catch (err) {
-      console.error(err);
-      alert('Payment init error');
+  async function handlePay(e) {
+  e.preventDefault();
+
+  try {
+    const API = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    const resp = await axios.post(`${API}/api/payments/initialize`, {
+      provider: 'paystack',
+      email: email.trim(),
+      amount: Number(amount),
+      redirectUrl: window.location.origin,
+    });
+
+    const url =
+      resp.data?.authorization_url ||
+      resp.data?.data?.authorization_url ||
+      resp.data?.data?.link;
+
+    if (url) {
+      window.location.href = url;
+    } else {
+      console.error('Payment init failed:', resp.data);
+      alert('Payment initialization failed');
     }
+  } catch (err) {
+    const msg = err.response?.data?.error || err.message;
+    console.error('Payment init error:', msg);
+    alert(msg);
   }
+}
 
   return (
     <form onSubmit={handlePay} className="space-y-4">
